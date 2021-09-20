@@ -134,6 +134,13 @@ class Recommender():
             print("I'm sorry, but a prediction cannot be made for this user-movie pair.  It looks like one of these items does not exist in our current database.")
 
             return None
+    
+    def helper_function(self, movie_id):
+
+        movie_name = str(self.movies[self.movies['movie_id'] == movie_id]['movie'])
+        movie_name = movie_name.replace('\nName: movie, dtype: object', '')
+
+        return movie_name
 
 
     def make_recommendations(self, _id, _id_type='movie', rec_num=5, years = None, genres = None):
