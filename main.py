@@ -4,7 +4,7 @@ from recommender import Recommender
 import pickle
 from pathlib import Path
 
-
+rec = Recommender()
 def main():
     body()
     sidebar()
@@ -22,6 +22,14 @@ def sidebar():
     if my_file.is_file():
         file = open("rec_1",'rb')
         model_file = pickle.load(file)
+
+    else:   
+        rec.fit(reviews_pth='train_data.csv', movies_pth= 'movies_clean.csv', learning_rate=.01, iters=20)
+        # Pickling the model
+        picklefile = open('rec_1', 'wb')
+        pickle.dump(rec, picklefile)
+        picklefile.close()
+
 
     type = ["movie", "user"]
     deselect = list(set(type))
