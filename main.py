@@ -29,6 +29,8 @@ def sidebar():
         picklefile = open('rec_1', 'wb')
         pickle.dump(rec, picklefile)
         picklefile.close()
+        file = open("rec_1",'rb')
+        model_file = pickle.load(file)
 
 
     type = ["movie", "user"]
