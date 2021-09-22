@@ -16,7 +16,7 @@ class Recommender():
         '''
 
 
-    def fit(self, reviews_pth, movies_pth, latent_features=15, learning_rate=0.01, iters=20):
+    def fit(self, reviews_pth, movies_pth, latent_features=10, learning_rate=0.01, iters=20):
         '''
         This function performs matrix factorization using a basic form of FunkSVD with no regularization
 

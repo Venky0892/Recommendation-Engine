@@ -45,13 +45,17 @@ def sidebar():
             user_id = st.sidebar.text_input("Enter the user_id")
 
         else:
+            
             user_id = st.sidebar.text_input("Enter the user_id")
-            movie_name = model_file.movies[model_file.movies['movie_id'] == int(user_id)]['movie']
-            print(str(movie_name))
-            movie_name = movie_name.replace('\nName: movie, dtype: object', '')
+            try:
+                movie_name = model_file.movies[model_file.movies['movie_id'] == int(user_id)]['movie']
+                movie_name = movie_name.replace('\nName: movie, dtype: object', '')
             # st.success(movie_name)
-            movie_name = str(st.sidebar.write("Movie Name:" + movie_name))
+                movie_name = str(st.sidebar.write("Movie Name:" + movie_name))
         
+            except ValueError:
+                pass
+            
         if st.sidebar.button("Recommendations"):
             val = model_file.make_recommendations(int(user_id), activity)
             ini = 1
