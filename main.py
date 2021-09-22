@@ -21,18 +21,18 @@ def body():
 
 def sidebar():
 
-    my_file = Path("rec_2")
+    my_file = Path("rec_1")
     if my_file.is_file():
-        file = open("rec_2",'rb')
+        file = open("rec_1",'rb')
         model_file = pickle.load(file)
 
     else:   
         rec.fit(reviews_pth='train_data.csv', movies_pth= 'movies_clean.csv', learning_rate=.01, iters=20)
         # Pickling the model
-        picklefile = open('rec_2', 'wb')
+        picklefile = open('rec_1', 'wb')
         pickle.dump(rec, picklefile)
         picklefile.close()
-        file = open("rec_2",'rb')
+        file = open("rec_1",'rb')
         model_file = pickle.load(file)
 
     if model_file:
@@ -46,8 +46,11 @@ def sidebar():
 
         else:
             user_id = st.sidebar.text_input("Enter the user_id")
-            movie_name = model_file.helper_function(user_id)
-            movie_name = st.sidebar.markdown("Movie Name:" + str(movie_name))
+            movie_name = model_file.movies[model_file.movies['movie_id'] == int(user_id)]['movie']
+            print(str(movie_name))
+            movie_name = movie_name.replace('\nName: movie, dtype: object', '')
+            # st.success(movie_name)
+            movie_name = str(st.sidebar.write("Movie Name:" + movie_name))
         
         if st.sidebar.button("Recommendations"):
             val = model_file.make_recommendations(int(user_id), activity)

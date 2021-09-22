@@ -16,7 +16,7 @@ class Recommender():
         '''
 
 
-    def fit(self, reviews_pth, movies_pth, latent_features=12, learning_rate=0.0001, iters=100):
+    def fit(self, reviews_pth, movies_pth, latent_features=15, learning_rate=0.01, iters=20):
         '''
         This function performs matrix factorization using a basic form of FunkSVD with no regularization
 
@@ -128,17 +128,34 @@ class Recommender():
             movie_name = movie_name.replace('\nName: movie, dtype: object', '')
             print("For user {} we predict a {} rating for the movie {}.".format(user_id, round(pred, 2), str(movie_name)))
 
-            return pred
+            return pred, str(movie_name)
 
         except:
             print("I'm sorry, but a prediction cannot be made for this user-movie pair.  It looks like one of these items does not exist in our current database.")
 
             return None
+
+    def create_train_test(self, reviews, order_by, training_size, testing_size):
+        '''    
+        INPUT:
+        reviews - (pandas df) dataframe to split into train and test
+        order_by - (string) column name to sort by
+        training_size - (int) number of rows in training set
+        testing_size - (int) number of columns in the test set
+        
+        OUTPUT:
+        training_df -  (pandas df) dataframe of the training set
+        validation_df - (pandas df) dataframe of the test set
+        '''
+        reviews_new = reviews.sort_values(order_by)
+        training_df = reviews_new.head(training_size)
+        validation_df = reviews_new.iloc[training_size:training_size+testing_size]
+        
+        return training_df, validation_df
     
     def helper_function(self, movie_id):
 
-        movie_name = str(self.movies[self.movies['movie_id'] == movie_id]['movie'])
-        movie_name = movie_name.replace('\nName: movie, dtype: object', '')
+        movie_name = str(self.movies[self.movies['movie_id'] == movie_id]['movie'])[:5]
 
         return movie_name
 
@@ -187,6 +204,7 @@ class Recommender():
             if _id_type == 'movie':
                 if _id in self.movie_ids_series:
                     rec_names = list(rf.find_similar_movies(_id, self.movies))[:rec_num]
+                    message = self.helper_function(_id)
                 else:
                     message = "That movie doesn't exist in our database.  Sorry, we don't have any recommendations for you."
 
@@ -212,12 +230,16 @@ if __name__ == '__main__':
         picklefile = open('rec_1', 'wb')
         pickle.dump(rec, picklefile)
         picklefile.close()
+        file = open("rec_1",'rb')
+        model_file = pickle.load(file)
 
 
     # predict
     # print(model_file.predict_rating(user_id=8, movie_id=2844))
     # print(model_file.make_recommendations(8,'user')) # user in the dataset
-    print(model_file.make_recommendations(1,'user')) # user not in dataset
+    print(model_file.make_recommendations(10,'user')) # user not in dataset
+    print(model_file.user_ids_series)
+    
     # print(model_file.make_recommendations(1853728)) # movie in the dataset
 
     # make recommendations
